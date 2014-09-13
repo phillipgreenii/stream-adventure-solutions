@@ -1,11 +1,8 @@
-var through = require('through');
-var trumpet = require('trumpet');
-var tr = trumpet();
-
-var stream = tr.select('.loud').createStream();
-stream.pipe(through(function(inner){
-    this.queue(inner.toString().toUpperCase());
-})).pipe(stream);
+var spawn = require('child_process').spawn;
+var duplexer = require('duplexer');
 
 
-process.stdin.pipe(tr).pipe(process.stdout);
+module.exports = function (cmd, args) {
+    var p = spawn(cmd, args);
+    return duplexer(p.stdin, p.stdout);
+};
