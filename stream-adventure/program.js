@@ -1,23 +1,7 @@
-var through = require('through'),
-    split = require('split');
+var concat = require('concat-stream');
 
-function lineCounter() {
-  var current = 0;
-  return through(function(line) {
-    this.queue([line, ++current]);
-  });
-}
 
 process.stdin
-    .pipe(split())
-    .pipe(lineCounter())
-    .pipe(through(function (parts) {
-        line = parts[0];
-        count = parts[1];
-        if (count % 2 === 0) {
-          this.queue(line.toUpperCase() +"\n");
-        } else {
-          this.queue(line.toLowerCase() +"\n");
-        }
-    }))
-    .pipe(process.stdout);
+    .pipe(concat(function (file) {
+        console.log(file.toString().split("").reverse().join(""));
+    }));
