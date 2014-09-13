@@ -1,3 +1,11 @@
-var ws = require('websocket-stream');
-var stream = ws('ws://localhost:8000');
-stream.end('hello\n');
+var through = require('through');
+var trumpet = require('trumpet');
+var tr = trumpet();
+
+var stream = tr.select('.loud').createStream();
+stream.pipe(through(function(inner){
+    this.queue(inner.toString().toUpperCase());
+})).pipe(stream);
+
+
+process.stdin.pipe(tr).pipe(process.stdout);
